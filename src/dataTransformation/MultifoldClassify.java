@@ -3,11 +3,15 @@ package dataTransformation;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.DecimalFormat;
+import java.util.Vector;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import database.DatabaseController;
+import database.DatabaseViewer;
+import settings.ModelParameter;
 
 /**
  * @author NAPAT PAOPONGPAIBUL This source code was used in my senior project
@@ -15,19 +19,51 @@ import database.DatabaseController;
  * @description Attribute (Column) transformation and blending for preparing
  *              before modelize data
  */
-public class AttributeBlender {
-	private final static Logger logger = LogManager.getLogger(AttributeBlender.class);
+public class MultifoldClassify {
+	private final static Logger logger = LogManager.getLogger(MultifoldClassify.class);
 	private static Connection con;
 
 	public static void main(String[] args) {
+		testMultifoldClassifyOnStockList();
+	}
+
+	private static void testMultifoldClassifyOnStockList() {
 		con = DatabaseController.openDBConnection();
-		try {
-			System.out.println(isMultifoldStock_1("JAS", "2015-01-01", "2017-01-01", 2.0, con));
-
-		} catch (Exception e) {
-			logger.error(e.toString());
+		Vector<String> symbol_list = DatabaseViewer.getSymbolList(con);
+		int count_true = 0, count_false = 0;
+		for (String symbol : symbol_list) {
+			try {
+				// System.out.print(symbol + " : ");
+				int res = -1;
+				switch (ModelParameter.MULTIFOLD_DETECT_MODE) {
+				case 1:
+					res = MultifoldClassify.isMultifoldStock_1(symbol, ModelParameter.S_DATE_MULFOLD,
+							ModelParameter.E_DATE_MULFOLD, ModelParameter.MUL_TIME_MULFOLD, con);
+					break;
+				case 2:
+					res = MultifoldClassify.isMultifoldStock_2(symbol, ModelParameter.S_DATE_MULFOLD,
+							ModelParameter.E_DATE_MULFOLD, ModelParameter.MUL_TIME_MULFOLD, con);
+					break;
+				}
+				// System.out.println(res);
+				if (res == 1) {
+					count_true++;
+				} else if (res == 0) {
+					count_false++;
+				}
+			} catch (Exception e) {
+				logger.error(e.toString());
+			}
 		}
-
+		int answered_size = count_true + count_false;
+		int missing_size = symbol_list.size() - answered_size;
+		Double missing_percent = Double.valueOf(missing_size) / symbol_list.size() * 100.0;
+		Double true_percent = Double.valueOf(count_true) / Double.valueOf(answered_size) * 100.0;
+		logger.info("multifold " + ModelParameter.MUL_TIME_MULFOLD + " times num of mulfold stock/answered : "
+				+ count_true + "/" + (answered_size) + " (" + new DecimalFormat("#.##").format(true_percent) + "%)");
+		logger.info("Missing value :" + missing_size + "/" + symbol_list.size() + " ("
+				+ new DecimalFormat("#.##").format(missing_percent) + "%)");
+		DatabaseController.closeDBConnection(con);
 	}
 
 	/**
@@ -134,7 +170,8 @@ public class AttributeBlender {
 		} catch (SQLException e) {
 			logger.error(e.toString());
 		}
-		//System.out.print(" today : " + today_price + ", max price : " + max_price + " , res : ");
+		// System.out.print(" today : " + today_price + ", max price : " +
+		// max_price + " , res : ");
 		if (max_price / today_price >= multiple)
 			return 1;
 		else

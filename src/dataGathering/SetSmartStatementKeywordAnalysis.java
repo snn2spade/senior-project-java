@@ -19,6 +19,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import database.DatabaseController;
+import database.DatabaseViewer;
 import settings.ExternalFilePath;
 
 /**
@@ -31,14 +32,18 @@ public class SetSmartStatementKeywordAnalysis {
 	private static Connection con;
 
 	public static void main(String[] args) {
-		List<String> stock_list = retreiveStockList();
+		con = DatabaseController.openDBConnection();
+		// List<String> stock_list = DatabaseViewer.getSymbolList(con);
+		List<String> stock_list = new ArrayList<String>();
+		stock_list.add("AEONTS");
+		DatabaseController.closeDBConnection(con);
 		Map<String, Integer> map_st = createStatementMap(stock_list,
-				ExternalFilePath.SETSMART_CASH_FLOW_YEARLY_FILEPATH);
-		Vector<String> sorted_key = sortStatementMap(map_st);
-		 sorted_key = sortYearKey(sorted_key);
-		sorted_key.stream().forEach(e -> {
-			System.out.println(e + " : " + map_st.get(e));
-		});
+				ExternalFilePath.SETSMART_COMPREHENSIVE_INCOME_YEARLY_FILEPATH);
+		// Vector<String> sorted_key = sortStatementMap(map_st);
+		// sorted_key = sortYearKey(sorted_key);
+		// sorted_key.stream().forEach(e -> {
+		// System.out.println(e + " : " + map_st.get(e));
+		// });
 	}
 
 	private static Vector<String> sortYearKey(Vector<String> vec) {
@@ -84,23 +89,17 @@ public class SetSmartStatementKeywordAnalysis {
 		return map_st;
 	}
 
-	private static List<String> retreiveStockList() {
-		con = DatabaseController.openDBConnection();
-		ResultSet stock_set = DatabaseController.executeQuerySQL(con, "select * from symbol");
-		List<String> stock_list = new ArrayList<String>();
-		try {
-			while (stock_set.next()) {
-				stock_list.add(stock_set.getString(2));
-			}
-		} catch (SQLException e) {
-			logger.error(e.getMessage());
-		}
-		DatabaseController.closeDBConnection(con);
-		con = null;
-		return stock_list;
-	}
-
-	private static Vector<Vector<String>> financialStatementKeywordAnalysis(String stock_name, String file_path) {
+	/**
+	 * @param stock_name
+	 *            name of stock
+	 * @param file_path
+	 *            excel file (.xls) path of Set Smart Financial Statement
+	 * @return the first index 0 is Vector that contains avaliable year in file
+	 *         <2012,2013,2014,...>. The rest index are vectors contain
+	 *         statement infomation <"net_income","100","200","300",..>
+	 */
+	public static Vector<Vector<String>> financialStatementKeywordAnalysis(String stock_name, String file_path) {
+		logger.info("Financial statement gathering for " + stock_name);
 		BufferedReader buf;
 		String line, doc = "";
 		try {
@@ -146,46 +145,53 @@ public class SetSmartStatementKeywordAnalysis {
 
 		while (scan.hasNextLine()) {
 			txt = scan.nextLine();
+			logger.debug(" start reading next line : " + txt);
 			if (txt.contains("/table")) {
 				break;
 			}
-			if (txt.contains("tr")) {
+			if (txt.matches(".*<tr.*")) {
+				logger.debug("contains <tr adding new vector");
 				data.add(new Vector<String>());
 			}
-			if (txt.matches(".*[^/]td.*")) {
+			if (txt.matches(".*<td.*")) {
+				if (txt.contains("<strong>")) {
+					int last_idx = data.size() - 1;
+					data.remove(last_idx);
+					logger.debug("remove last vector");
+					while (!(txt = scan.nextLine()).contains("/tr")) {
+					}
+					continue;
+				}
 				txt = scan.nextLine();
+				logger.debug("After found td : " + txt);
 				if (txt.contains("&nbsp;")) {
 					txt = scan.nextLine();
+					logger.debug("line after match &nbsp" + txt);
 					txt = txt.trim();
 					txt = "(sub) " + txt;
 				}
+
 				txt = txt.trim();
 				data.lastElement().add(txt);
 			}
 		}
 		scan.close();
-		logger.info("Financial statement gathering for " + stock_name);
-//		data.stream().forEach(e -> {
-//			e.stream().forEach(s -> System.out.print(s + ", "));
-//			System.out.println("");
-//		});
-		return data;
-	}
-
-	private static Vector<Vector<String>> insertFinancialPositionItemType(Vector<Vector<String>> data) {
-		int first_idx = 1;
-		for (int i = 0; i < data.size(); i++) {
-			if (!data.get(i).isEmpty()) {
-				String txt2 = data.get(i).get(0);
-				if (txt2.contains("total assets")) {
-					first_idx = insertItemType(data, first_idx, i, "(asset) ");
-				} else if (txt2.contains("total liabilities")) {
-					first_idx = insertItemType(data, first_idx, i, "(liabilities) ");
-				} else if (txt2.contains("total equity")) {
-					first_idx = insertItemType(data, first_idx, i, "(equity) ");
-				}
+		// remove duplicate year (recent column)
+		if (data.get(0).size() >= 2 && data.get(0).get(0).equals(data.get(0).get(1))) {
+			Vector<String> year_vec = data.get(0);
+			year_vec.remove(0);
+			data.set(0, year_vec);
+			for (int i = 1; i < data.size(); i++) {
+				Vector<String> item_vec = data.get(i);
+				item_vec.remove(2);
+				item_vec.remove(1);
+				data.set(i, item_vec);
 			}
 		}
+		// data.stream().forEach(e -> {
+		// e.stream().forEach(s -> System.out.print(s + " , "));
+		// System.out.println("");
+		// });
 		return data;
 	}
 
