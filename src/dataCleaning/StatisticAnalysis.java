@@ -15,7 +15,7 @@ import java.util.Vector;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import dataGathering.DatabaseController;
+import database.DatabaseController;
 import settings.ExternalFilePath;
 
 /**

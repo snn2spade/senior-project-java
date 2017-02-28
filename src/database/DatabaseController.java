@@ -1,4 +1,4 @@
-package dataGathering;
+package database;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -23,6 +23,9 @@ public class DatabaseController {
 	static final String DB_URL = "jdbc:mysql://localhost/" + DatabaseConfig.DB_NAME + "?user=" + DatabaseConfig.DB_USER
 			+ "&password=" + DatabaseConfig.DB_PASS;
 
+	/**
+	 * @return Connection for execute SQL, must be call closeDBConnection() after finished
+	 */
 	public static Connection openDBConnection() {
 		Connection connect = null;
 		try {
@@ -52,6 +55,11 @@ public class DatabaseController {
 		}
 	}
 
+	/**
+	 * method for excuteSQL that doesn't have reply result, must be open connection first
+	 * @param con Java.sql.Connection that already connected to database
+	 * @param sql SQL statement
+	 */
 	public static void executeSQL(Connection con, String sql) {
 		try {
 			Statement stmt = con.createStatement();
@@ -63,7 +71,12 @@ public class DatabaseController {
 			e.printStackTrace();
 		}
 	}
-
+	/**
+	 * method for excuteSQL that does have reply result, must be open connection first
+	 * @param con Java.sql.Connection that already connected to database
+	 * @param sql SQL statement 
+	 * @return result of SQL statement
+	 */
 	public static ResultSet executeQuerySQL(Connection con, String sql) {
 		ResultSet result = null;
 		try {

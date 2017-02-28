@@ -14,7 +14,7 @@ public class TextExtractor {
 	private static final Logger logger = LogManager.getLogger(TextExtractor.class);
 
 	public static void main(String args[]) {
-
+		System.out.println("TEST");
 	}
 
 	public static String getNumberOrQuestionMark(String in) {
