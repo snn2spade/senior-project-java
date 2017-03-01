@@ -1,16 +1,26 @@
 package dataTransformation;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Set;
+import java.util.TreeMap;
 import java.util.Vector;
+import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import database.DatabaseController;
 import database.DatabaseViewer;
+import settings.ExternalFilePath;
 import settings.ModelParameter;
 
 /**
@@ -24,12 +34,42 @@ public class MultifoldClassify {
 	private static Connection con;
 
 	public static void main(String[] args) {
-		testMultifoldClassifyOnStockList();
+		con = DatabaseController.openDBConnection();
+		TreeMap<String, String> res_map = createMultifoldClassifyOnStockList(con);
+		DatabaseController.closeDBConnection(con);
+		writeCSVMultifoldResult(res_map, "mulfold_model_1_mar_17_v1");
 	}
 
-	private static void testMultifoldClassifyOnStockList() {
-		con = DatabaseController.openDBConnection();
+	private static void writeCSVMultifoldResult(TreeMap<String, String> res_map, String file_name) {
+		Set<String> key_set = res_map.keySet();
+		key_set.stream().sorted().collect(Collectors.toList());
+		FileWriter fw;
+		try {
+			fw = new FileWriter(new File(ExternalFilePath.OUTPUT_MODEL_CSV_FILEPATH + file_name + ".txt"));
+			BufferedWriter bw = new BufferedWriter(fw);
+			bw.write("symbol,isMultifold");
+			bw.newLine();
+			for (String key : key_set) {
+				String txt = key;
+				txt += "," + res_map.get(key);
+				bw.write(txt);
+				bw.newLine();
+			}
+			bw.close();
+		} catch (IOException e) {
+			logger.error(e.getMessage());
+		}
+
+	}
+
+	/**
+	 * @param con
+	 *            DatabaseConnection
+	 * @return Map <"symbol_name",result> , result set is {"true","false","?"}
+	 */
+	private static TreeMap<String, String> createMultifoldClassifyOnStockList(Connection con) {
 		Vector<String> symbol_list = DatabaseViewer.getSymbolList(con);
+		TreeMap<String, String> res_map = new TreeMap<String, String>();
 		int count_true = 0, count_false = 0;
 		for (String symbol : symbol_list) {
 			try {
@@ -45,6 +85,14 @@ public class MultifoldClassify {
 							ModelParameter.E_DATE_MULFOLD, ModelParameter.MUL_TIME_MULFOLD, con);
 					break;
 				}
+				if (res == 1) {
+					res_map.put(symbol, "true");
+				} else if (res == 0) {
+					res_map.put(symbol, "false");
+				} else {
+					res_map.put(symbol, "?");
+				}
+
 				// System.out.println(res);
 				if (res == 1) {
 					count_true++;
@@ -63,7 +111,7 @@ public class MultifoldClassify {
 				+ count_true + "/" + (answered_size) + " (" + new DecimalFormat("#.##").format(true_percent) + "%)");
 		logger.info("Missing value :" + missing_size + "/" + symbol_list.size() + " ("
 				+ new DecimalFormat("#.##").format(missing_percent) + "%)");
-		DatabaseController.closeDBConnection(con);
+		return res_map;
 	}
 
 	/**
