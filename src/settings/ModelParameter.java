@@ -11,7 +11,7 @@ public class ModelParameter {
 	 */
 	public static final String S_DATE_MULFOLD = "2015-01-05";
 	public static final String E_DATE_MULFOLD = "2017-01-01";
-	public static final Double MUL_TIME_MULFOLD = 2.0;
+	public static final Double MUL_TIME_MULFOLD = 1.3;
 	/**
 	 * mode 1 classify multifold stock by max_price/min_price >= multiple factor 
 	 * mode 2 classify multifold stock by max_price/today_price >= multiple factor

@@ -30,11 +30,11 @@ public class GenerateModelCSV {
 	public static void main(String[] args) {
 		con = DatabaseController.openDBConnection();
 		stockList = DatabaseViewer.getSymbolList(con);
-//		writeCSV("fp_model_28_feb_17_v1", ExternalFilePath.FINANCIAL_POS_ATTR_SELECTED_FILEPATH,
-//				createDataMap(ExternalFilePath.SETSMART_FINANCIAL_POSITION_YEARLY_FILEPATH));
-		writeCSV("ci_model_28_feb_17_v1", ExternalFilePath.COMPREHEN_INCOME_ATTR_SELECTED_FILEPATH,
+		writeCSV("fp_model_v2", ExternalFilePath.FINANCIAL_POS_ATTR_SELECTED_FILEPATH,
+				createDataMap(ExternalFilePath.SETSMART_FINANCIAL_POSITION_YEARLY_FILEPATH));
+		writeCSV("ci_model_v2", ExternalFilePath.COMPREHEN_INCOME_ATTR_SELECTED_FILEPATH,
 				createDataMap(ExternalFilePath.SETSMART_COMPREHENSIVE_INCOME_YEARLY_FILEPATH));
-		writeCSV("cf_model_28_feb_17_v1", ExternalFilePath.CASH_FLOW_ATTR_SELECTED_FILEPATH,
+		writeCSV("cf_model_v2", ExternalFilePath.CASH_FLOW_ATTR_SELECTED_FILEPATH,
 				createDataMap(ExternalFilePath.SETSMART_CASH_FLOW_YEARLY_FILEPATH));
 	}
 
@@ -73,7 +73,7 @@ public class GenerateModelCSV {
 						// System.out.println(
 						// "year :" + year + " attr : " + attr_name + "parsing
 						// -> " + attr.get(i * 2 + 1));
-						attr_value = Double.parseDouble(attr.get(i * 2 + 1).replaceAll(",", ""));
+						attr_value = Double.parseDouble(attr.get((i + 1) * 2).replaceAll(",", ""));
 					} catch (NumberFormatException e) {
 						logger.debug(e.getMessage());
 						attr_value = null;

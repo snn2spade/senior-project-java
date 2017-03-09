@@ -37,7 +37,7 @@ public class MultifoldClassify {
 		con = DatabaseController.openDBConnection();
 		TreeMap<String, String> res_map = createMultifoldClassifyOnStockList(con);
 		DatabaseController.closeDBConnection(con);
-		writeCSVMultifoldResult(res_map, "mulfold_model_1_mar_17_v1");
+		writeCSVMultifoldResult(res_map, "mulfold_model_method_2_mul_1p3");
 	}
 
 	private static void writeCSVMultifoldResult(TreeMap<String, String> res_map, String file_name) {
