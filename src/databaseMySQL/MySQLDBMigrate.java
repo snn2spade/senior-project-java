@@ -15,6 +15,9 @@ import dataGathering.TextExtractor;
 import settings.ExternalFilePath;
 
 /**
+ * 
+ * -- Deprecated class -- Can migrate all historical trading/symbol but not yet implement 
+ * migrate historical financial statement
  * @author NAPAT PAOPONGPAIBUL This source code was used in my senior project
  *         2016 for Education purpose ONLY
  * @description convert set smart historical raw file to MySQL database

@@ -20,8 +20,8 @@ import settings.DatabaseConfig;
 public class MySQLDBController {
 	private static final Logger logger = LogManager.getLogger(MySQLDBController.class);
 	static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
-	static final String DB_URL = "jdbc:mysql://localhost/" + DatabaseConfig.DB_NAME + "?user=" + DatabaseConfig.DB_USER
-			+ "&password=" + DatabaseConfig.DB_PASS;
+	static final String DB_URL = "jdbc:mysql://localhost/" + DatabaseConfig.MYSQL_DB_NAME + "?user=" + DatabaseConfig.MYSQL_DB_USER
+			+ "&password=" + DatabaseConfig.MYSQL_DB_PASS;
 
 	/**
 	 * @return Connection for execute SQL, must be call closeDBConnection() after finished
