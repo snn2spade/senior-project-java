@@ -15,7 +15,7 @@ import java.util.Vector;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import database.DatabaseController;
+import databaseMySQL.MySQLDBController;
 import settings.ExternalFilePath;
 
 /**
@@ -75,7 +75,7 @@ public class StatisticAnalysis {
 			FileReader fileReader = new FileReader(new File(ExternalFilePath.STOCKLIST_INPUT_FILEPATH));
 			bufferedReader = new BufferedReader(fileReader);
 			Connection con;
-			con = DatabaseController.openDBConnection();
+			con = MySQLDBController.openDBConnection();
 			String txt;
 			Vector<Triplet> myBuc = new Vector<>();
 			logger.info("Start Query all close price from database");
@@ -83,10 +83,10 @@ public class StatisticAnalysis {
 			while ((txt = bufferedReader.readLine()) != null) {
 				String sql = "select count(*) from historicaltrading left join symbol on symbol.id = historicaltrading.symbol_id";
 				sql += " where symbol.name='" + txt + "' and close_price is null;";
-				ResultSet result = DatabaseController.executeQuerySQL(con, sql);
+				ResultSet result = MySQLDBController.executeQuerySQL(con, sql);
 				sql = "select count(*) from historicaltrading left join symbol on symbol.id = historicaltrading.symbol_id";
 				sql += " where symbol.name='" + txt + "';";
-				ResultSet result2 = DatabaseController.executeQuerySQL(con, sql);
+				ResultSet result2 = MySQLDBController.executeQuerySQL(con, sql);
 				double d_src = 0, d_all = 0;
 				while (result.next()) {
 					d_src = result.getInt(1);
@@ -121,7 +121,7 @@ public class StatisticAnalysis {
 			System.out.println("--------------------------------");
 			System.out.println("total_close_price_missing  : " + sum_d_src + " / " + sum_d_all + " line ("
 					+ new DecimalFormat("#0.000").format(sum_d_src / sum_d_all * 100.00) + " %)");
-			DatabaseController.closeDBConnection(con);
+			MySQLDBController.closeDBConnection(con);
 		} catch (FileNotFoundException e) {
 			logger.error(e.getMessage());
 		} catch (IOException e) {

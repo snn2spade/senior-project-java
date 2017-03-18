@@ -1,4 +1,4 @@
-package database;
+package databaseMySQL;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -13,8 +13,8 @@ import org.apache.logging.log4j.Logger;
  *         2016 for Education purpose ONLY
  * @description aggregated frequently simple query statement
  */
-public class DatabaseViewer {
-	private static final Logger logger = LogManager.getLogger(DatabaseViewer.class);
+public class MySQLDBViewer {
+	private static final Logger logger = LogManager.getLogger(MySQLDBViewer.class);
 
 	/**
 	 * @param con Database connection from javal.sql.Connection
@@ -22,7 +22,7 @@ public class DatabaseViewer {
 	 */
 	public static Vector<String> getSymbolList(Connection con) {
 		String symbol_query = "SELECT `name` FROM stock.symbol;";
-		ResultSet symbol_set = DatabaseController.executeQuerySQL(con, symbol_query);
+		ResultSet symbol_set = MySQLDBController.executeQuerySQL(con, symbol_query);
 		Vector<String> symbol_list = new Vector<>();
 		try {
 			while (symbol_set.next()) {

@@ -1,4 +1,4 @@
-package database;
+package databaseMySQL;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -17,8 +17,8 @@ import settings.DatabaseConfig;
  * @description 
  * for connector to mySQL database and execute SQL
  */
-public class DatabaseController {
-	private static final Logger logger = LogManager.getLogger(DatabaseController.class);
+public class MySQLDBController {
+	private static final Logger logger = LogManager.getLogger(MySQLDBController.class);
 	static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
 	static final String DB_URL = "jdbc:mysql://localhost/" + DatabaseConfig.DB_NAME + "?user=" + DatabaseConfig.DB_USER
 			+ "&password=" + DatabaseConfig.DB_PASS;

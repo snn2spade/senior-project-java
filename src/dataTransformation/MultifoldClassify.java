@@ -18,8 +18,8 @@ import java.util.stream.Collectors;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import database.DatabaseController;
-import database.DatabaseViewer;
+import databaseMySQL.MySQLDBController;
+import databaseMySQL.MySQLDBViewer;
 import settings.ExternalFilePath;
 import settings.ModelParameter;
 
@@ -34,9 +34,9 @@ public class MultifoldClassify {
 	private static Connection con;
 
 	public static void main(String[] args) {
-		con = DatabaseController.openDBConnection();
+		con = MySQLDBController.openDBConnection();
 		TreeMap<String, String> res_map = createMultifoldClassifyOnStockList(con);
-		DatabaseController.closeDBConnection(con);
+		MySQLDBController.closeDBConnection(con);
 		writeCSVMultifoldResult(res_map, "mulfold_model_method_2_mul_1p3");
 	}
 
@@ -68,7 +68,7 @@ public class MultifoldClassify {
 	 * @return Map <"symbol_name",result> , result set is {"true","false","?"}
 	 */
 	private static TreeMap<String, String> createMultifoldClassifyOnStockList(Connection con) {
-		Vector<String> symbol_list = DatabaseViewer.getSymbolList(con);
+		Vector<String> symbol_list = MySQLDBViewer.getSymbolList(con);
 		TreeMap<String, String> res_map = new TreeMap<String, String>();
 		int count_true = 0, count_false = 0;
 		for (String symbol : symbol_list) {
@@ -135,7 +135,7 @@ public class MultifoldClassify {
 	public static int isMultifoldStock_1(String symbol, String s_date, String e_date, Double multiple, Connection con) {
 		Double min_price = 0.0, max_price = 0.0;
 		String get_min_price_st = "select stock.get_min_price('" + symbol + "', '" + s_date + "', '" + e_date + "')";
-		ResultSet min_price_set = DatabaseController.executeQuerySQL(con, get_min_price_st);
+		ResultSet min_price_set = MySQLDBController.executeQuerySQL(con, get_min_price_st);
 		try {
 			if (min_price_set.next()) {
 				min_price = min_price_set.getDouble(1);
@@ -149,7 +149,7 @@ public class MultifoldClassify {
 			logger.error(e.toString());
 		}
 		String get_max_price_st = "select stock.get_max_price('" + symbol + "', '" + s_date + "', '" + e_date + "')";
-		ResultSet max_price_set = DatabaseController.executeQuerySQL(con, get_max_price_st);
+		ResultSet max_price_set = MySQLDBController.executeQuerySQL(con, get_max_price_st);
 		try {
 			if (max_price_set.next()) {
 				max_price = max_price_set.getDouble(1);
@@ -190,7 +190,7 @@ public class MultifoldClassify {
 		Double today_price = 0.0, max_price = 0.0;
 		String today_price_st = "select close_price from historicaltrading join symbol on symbol.id = symbol_id where symbol.name='"
 				+ symbol + "' and price_date ='" + s_date + "';";
-		ResultSet today_price_set = DatabaseController.executeQuerySQL(con, today_price_st);
+		ResultSet today_price_set = MySQLDBController.executeQuerySQL(con, today_price_st);
 		try {
 			if (today_price_set.next()) {
 				today_price = today_price_set.getDouble(1);
@@ -204,7 +204,7 @@ public class MultifoldClassify {
 			logger.error(e.toString());
 		}
 		String get_max_price_st = "select stock.get_max_price('" + symbol + "','" + s_date + "', '" + e_date + "')";
-		ResultSet max_price_set = DatabaseController.executeQuerySQL(con, get_max_price_st);
+		ResultSet max_price_set = MySQLDBController.executeQuerySQL(con, get_max_price_st);
 		try {
 			if (max_price_set.next()) {
 				max_price = max_price_set.getDouble(1);

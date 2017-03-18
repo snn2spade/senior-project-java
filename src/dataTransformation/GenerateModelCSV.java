@@ -13,8 +13,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import dataGathering.SetSmartStatementKeywordAnalysis;
-import database.DatabaseController;
-import database.DatabaseViewer;
+import databaseMySQL.MySQLDBController;
+import databaseMySQL.MySQLDBViewer;
 import settings.ExternalFilePath;
 
 /**
@@ -28,8 +28,8 @@ public class GenerateModelCSV {
 	private static Vector<String> stockList;
 
 	public static void main(String[] args) {
-		con = DatabaseController.openDBConnection();
-		stockList = DatabaseViewer.getSymbolList(con);
+		con = MySQLDBController.openDBConnection();
+		stockList = MySQLDBViewer.getSymbolList(con);
 		writeCSV("fp_model_v2", ExternalFilePath.FINANCIAL_POS_ATTR_SELECTED_FILEPATH,
 				createDataMap(ExternalFilePath.SETSMART_FINANCIAL_POSITION_YEARLY_FILEPATH));
 		writeCSV("ci_model_v2", ExternalFilePath.COMPREHEN_INCOME_ATTR_SELECTED_FILEPATH,

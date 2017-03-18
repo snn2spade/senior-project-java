@@ -18,8 +18,8 @@ import java.util.Vector;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import database.DatabaseController;
-import database.DatabaseViewer;
+import databaseMySQL.MySQLDBController;
+import databaseMySQL.MySQLDBViewer;
 import settings.ExternalFilePath;
 
 /**
@@ -32,11 +32,11 @@ public class SetSmartStatementKeywordAnalysis {
 	private static Connection con;
 
 	public static void main(String[] args) {
-		con = DatabaseController.openDBConnection();
+		con = MySQLDBController.openDBConnection();
 		// List<String> stock_list = DatabaseViewer.getSymbolList(con);
 		List<String> stock_list = new ArrayList<String>();
 		stock_list.add("AEONTS");
-		DatabaseController.closeDBConnection(con);
+		MySQLDBController.closeDBConnection(con);
 		Map<String, Integer> map_st = createStatementMap(stock_list,
 				ExternalFilePath.SETSMART_COMPREHENSIVE_INCOME_YEARLY_FILEPATH);
 		// Vector<String> sorted_key = sortStatementMap(map_st);
