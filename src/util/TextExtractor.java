@@ -1,20 +1,19 @@
-package dataGathering;
+package util;
 
 import org.apache.logging.log4j.Logger;
 
 import org.apache.logging.log4j.LogManager;
 
 /**
- * @author NAPAT PAOPONGPAIBUL
- * This source code was used in my senior project 2016 for Education purpose ONLY
- * @description 
- * text extractor library
+ * @author NAPAT PAOPONGPAIBUL This source code was used in my senior project
+ *         2016 for Education purpose ONLY
+ * @description text extractor library
  */
 public class TextExtractor {
 	private static final Logger logger = LogManager.getLogger(TextExtractor.class);
 
 	public static void main(String args[]) {
-		System.out.println("TEST");
+		System.out.println(parseDouble("-"));
 	}
 
 	public static String getNumberOrQuestionMark(String in) {
@@ -58,6 +57,17 @@ public class TextExtractor {
 			}
 		}
 		String result = year + "-" + month + "-" + day;
+		return result;
+	}
+
+	public static Double parseDouble(String val) {
+		val = val.trim().replaceAll("[^\\d.-]", "");
+		Double result;
+		try {
+			result = Double.parseDouble(val);
+		} catch (NumberFormatException e) {
+			throw new NumberFormatException();
+		}
 		return result;
 	}
 }

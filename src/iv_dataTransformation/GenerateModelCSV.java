@@ -1,4 +1,4 @@
-package dataTransformation;
+package iv_dataTransformation;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -12,9 +12,9 @@ import java.util.Vector;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import dataGathering.SetSmartStatementKeywordAnalysis;
 import databaseMySQL.MySQLDBController;
 import databaseMySQL.MySQLDBViewer;
+import ii_dataAnalysis.FinancialStatementAnalysis;
 import settings.ExternalFilePath;
 
 /**
@@ -58,8 +58,8 @@ public class GenerateModelCSV {
 		HashMap<String, HashMap<Integer, HashMap<String, Double>>> data_map = new HashMap<String, HashMap<Integer, HashMap<String, Double>>>();
 		data_map = insertEmptyMap(data_map);
 		for (String stock_name : stockList) {
-			Vector<Vector<String>> data_vec = SetSmartStatementKeywordAnalysis
-					.financialStatementKeywordAnalysis(stock_name, financial_statement_file_path);
+			Vector<Vector<String>> data_vec = FinancialStatementAnalysis
+					.readFinancialStatementToVector(stock_name, financial_statement_file_path);
 			Vector<String> year_vec = data_vec.get(0);
 			data_vec.remove(0); // remove year vector
 			HashMap<Integer, HashMap<String, Double>> year_map = data_map.get(stock_name);

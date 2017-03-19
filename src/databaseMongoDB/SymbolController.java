@@ -1,6 +1,6 @@
 package databaseMongoDB;
 
-import java.util.ArrayList;
+import java.util.Vector;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -9,7 +9,6 @@ import org.bson.Document;
 import com.mongodb.Block;
 import com.mongodb.MongoException;
 import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoCursor;
 import com.mongodb.client.model.IndexOptions;
 import com.mongodb.client.model.Indexes;
 
@@ -41,35 +40,31 @@ public class SymbolController {
 		logger.info("inserted indexing");
 	}
 
-	public ArrayList<String> getSymbolList() {
-		ArrayList<String> list = new ArrayList<>();
+	public Vector<String> getSymbolList() {
+		Vector<String> vec = new Vector<>();
 		mCollection.find().forEach(new Block<Document>() {
 			public void apply(Document t) {
-				list.add(t.getString("name"));
+				vec.add(t.getString("name"));
 			};
 		});
-		return list;
+		return vec;
 	}
 
-	public boolean insertSymbol(String symbol) {
-		symbol = symbol.toUpperCase();
+	public void insertSymbol(String symbol) {
+		symbol = symbol.trim().toUpperCase();
 		if (mCollection.find(new Document("name", symbol)).first() != null) {
 			logger.error("cannot insert duplicate item");
-			return false;
 		}
 		mCollection.insertOne(new Document("name", symbol));
-		return true;
 	}
 
-	public boolean updateMarket(String symbol, String market) {
-		symbol = symbol.toUpperCase();
-		market = market.toLowerCase();
+	public void updateMarket(String symbol, String market) {
+		symbol = symbol.trim().toUpperCase();
+		market = market.trim().toLowerCase();
 		try {
-			mCollection.updateOne(new Document("name", symbol), new Document("market", market));
-			return true;
+			mCollection.updateOne(new Document("name", symbol), new Document("$set", new Document("market", market)));
 		} catch (MongoException e) {
 			logger.error(e.getMessage());
-			return false;
 		}
 	}
 }

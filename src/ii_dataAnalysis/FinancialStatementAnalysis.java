@@ -1,4 +1,4 @@
-package dataGathering;
+package ii_dataAnalysis;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -27,8 +27,8 @@ import settings.ExternalFilePath;
  *         2016 for Education purpose ONLY
  * @description
  */
-public class SetSmartStatementKeywordAnalysis {
-	private final static Logger logger = LogManager.getLogger(SetSmartStatementKeywordAnalysis.class);
+public class FinancialStatementAnalysis {
+	private final static Logger logger = LogManager.getLogger(FinancialStatementAnalysis.class);
 	private static Connection con;
 
 	public static void main(String[] args) {
@@ -76,7 +76,7 @@ public class SetSmartStatementKeywordAnalysis {
 	private static Map<String, Integer> createStatementMap(List<String> stock_list, String file_path) {
 		Map<String, Integer> map_st = new HashMap<>();
 		stock_list.stream().forEach(e -> {
-			Vector<Vector<String>> vec = financialStatementKeywordAnalysis(e, file_path);
+			Vector<Vector<String>> vec = readFinancialStatementToVector(e, file_path);
 			vec.get(0).forEach(e2 -> map_st.put(e2, map_st.containsKey(e2) ? map_st.get(e2) + 1 : 1));
 			vec.remove(0);
 			vec.stream().forEach(e2 -> {
@@ -90,6 +90,29 @@ public class SetSmartStatementKeywordAnalysis {
 	}
 
 	/**
+	 * @param data
+	 *            vector that contains vector of each statement record (total
+	 *            asset,100,100,100..)
+	 * @param first_idx
+	 *            first index for inserting type
+	 * @param last_idx
+	 *            last index for inserting type
+	 * @return next first index for inserting type
+	 */
+	private static int insertItemType(Vector<Vector<String>> data, int first_idx, int last_idx, String type) {
+		Vector<String> vec;
+		for (int j = first_idx; j <= last_idx; j++) {
+			vec = data.get(j);
+			if (!vec.isEmpty()) {
+				vec.set(0, type + data.get(j).get(0));
+				data.set(j, vec);
+			}
+		}
+		first_idx = last_idx + 1;
+		return first_idx;
+	}
+
+	/**
 	 * @param stock_name
 	 *            name of stock
 	 * @param file_path
@@ -98,8 +121,7 @@ public class SetSmartStatementKeywordAnalysis {
 	 *         <2012,2013,2014,...>. The rest index are vectors contain
 	 *         statement infomation <"net_income","100","200","300",..>
 	 */
-	public static Vector<Vector<String>> financialStatementKeywordAnalysis(String stock_name, String file_path) {
-		logger.info("Financial statement gathering for " + stock_name);
+	public static Vector<Vector<String>> readFinancialStatementToVector(String stock_name, String file_path) {
 		BufferedReader buf;
 		String line, doc = "";
 		try {
@@ -193,29 +215,6 @@ public class SetSmartStatementKeywordAnalysis {
 		// System.out.println("");
 		// });
 		return data;
-	}
-
-	/**
-	 * @param data
-	 *            vector that contains vector of each statement record (total
-	 *            asset,100,100,100..)
-	 * @param first_idx
-	 *            first index for inserting type
-	 * @param last_idx
-	 *            last index for inserting type
-	 * @return next first index for inserting type
-	 */
-	private static int insertItemType(Vector<Vector<String>> data, int first_idx, int last_idx, String type) {
-		Vector<String> vec;
-		for (int j = first_idx; j <= last_idx; j++) {
-			vec = data.get(j);
-			if (!vec.isEmpty()) {
-				vec.set(0, type + data.get(j).get(0));
-				data.set(j, vec);
-			}
-		}
-		first_idx = last_idx + 1;
-		return first_idx;
 	}
 
 }

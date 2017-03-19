@@ -11,8 +11,8 @@ import java.util.Vector;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import dataGathering.TextExtractor;
 import settings.ExternalFilePath;
+import util.TextExtractor;
 
 /**
  * 

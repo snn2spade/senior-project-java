@@ -1,4 +1,4 @@
-package dataGathering;
+package i_dataGathering;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
