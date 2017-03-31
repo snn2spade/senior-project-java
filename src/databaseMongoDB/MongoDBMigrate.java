@@ -32,7 +32,7 @@ public class MongoDBMigrate {
 	private static BufferedReader bufferedReader;
 
 	public static void main(String[] args) {
-		// imediatelyMigrateToMongoDB();
+		 imediatelyMigrateToMongoDB();
 	}
 
 	private static void imediatelyMigrateToMongoDB() {

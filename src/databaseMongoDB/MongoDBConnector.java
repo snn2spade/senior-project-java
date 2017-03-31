@@ -54,7 +54,6 @@ public class MongoDBConnector {
 		mMongoDatabase = mMongoClient.getDatabase("stock");
 		logger.info("successful open connection");
 	}
-
 	public boolean isOpenConnection() {
 		return mMongoDatabase != null;
 	}
