@@ -18,6 +18,7 @@ import ii_dataAnalysis.FinancialStatementAnalysis;
 import settings.ExternalFilePath;
 
 /**
+ * <<DEPRECATED CLASS>>
  * @author NAPAT PAOPONGPAIBUL This source code was used in my senior project
  *         2016 for Education purpose ONLY
  * @description For generate RapidMiner training file format

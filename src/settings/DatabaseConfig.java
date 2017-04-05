@@ -6,8 +6,8 @@ public class DatabaseConfig {
 	public static final String MYSQL_DB_USER = "root";
 	public static final String MYSQL_DB_PASS = "1049269";
 	/* MongoDB Database */
-//	public static final String MONGO_URI = "mongodb://localhost:27017";
-	public static final String MONGO_URI = "mongodb://seniorproject-api.tk:27017";
+	public static final String MONGO_URI = "mongodb://localhost:27017";
+//	public static final String MONGO_URI = "mongodb://seniorproject-api.tk:27017";
 	public static final String SYMBOL_COLLECTION_NAME = "symbol";
 	public static final String HIS_TRADING_COLLECTION_NAME = "historicalTrading";
 	public static final String COMP_INFO_COLLECTION_NAME = "CompanyInfo";

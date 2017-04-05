@@ -24,6 +24,7 @@ import settings.ExternalFilePath;
 import settings.ModelParameter;
 
 /**
+ * <<DEPRECATED CLASS>>
  * @author NAPAT PAOPONGPAIBUL This source code was used in my senior project
  *         2016 for Education purpose ONLY
  * @description Attribute (Column) transformation and blending for preparing
