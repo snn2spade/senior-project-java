@@ -1,5 +1,7 @@
 package iv_dataTransformation;
 
+import java.time.Month;
+import java.time.Year;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -19,7 +21,9 @@ import util.CSVModifier;
  */
 public class HistoricalTradingCSVGenerator extends CSVGenerator {
 
-	private final int YEAR = 2015;
+	private int year;
+	private int month;
+	private int date;
 
 	String symbol;
 	Date start_date;
@@ -28,9 +32,15 @@ public class HistoricalTradingCSVGenerator extends CSVGenerator {
 	List<Double> turn_over_chg;
 
 	public static void main(String[] args) {
-		HistoricalTradingCSVGenerator csvgen = new HistoricalTradingCSVGenerator();
+		HistoricalTradingCSVGenerator csvgen = new HistoricalTradingCSVGenerator(2015, Calendar.JANUARY, 5);
 		csvgen.createCSV(LogManager.getLogger(HistoricalTradingCSVGenerator.class), "historicalTrading",
-				"historicalTrading_2015.csv");
+				"historicalTrading_" + csvgen.year + "_" + (csvgen.month + 1) + "_" + csvgen.date + ".csv");
+	}
+
+	public HistoricalTradingCSVGenerator(int year, int month, int date) {
+		this.year = year;
+		this.month = month;
+		this.date = date;
 	}
 
 	private void resetVariable() {
@@ -64,19 +74,15 @@ public class HistoricalTradingCSVGenerator extends CSVGenerator {
 				resetVariable();
 				symbol = t.getString("symbol_name");
 				List<Document> data = (List<Document>) t.get("data");
-				Collections.reverse(data.subList(0, data.size()));
 				data.forEach(new Consumer<Document>() {
 					@Override
 					public void accept(Document t) {
-						Date date = (Date) t.get("date");
+						Date day = (Date) t.get("date");
 						Calendar cal = Calendar.getInstance();
-						cal.setTime(date);
-						Calendar cal2 = Calendar.getInstance();
-						cal2.set(YEAR, Calendar.JANUARY, 1);
-						Calendar cal3 = Calendar.getInstance();
-						cal3.set(YEAR, Calendar.FEBRUARY, 1);
-						if (start_date == null && cal.after(cal2) && cal.before(cal3)) {
-							start_date = date;
+						cal.setTime(day);
+						if (start_date == null && cal.get(Calendar.YEAR) == year && cal.get(Calendar.MONTH) == month
+								&& cal.get(Calendar.DATE) == date) {
+							start_date = day;
 						}
 						if (start_date != null) {
 							if (now_pe == null) {
