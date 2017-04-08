@@ -1,5 +1,6 @@
 package util;
 
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -27,7 +28,9 @@ public class CSVModifier {
 		if (in == null) {
 			csv_row += "?,";
 		} else {
-			csv_row += in + ",";
+			DecimalFormat df = new DecimalFormat("#.###");
+			String res = df.format(in);
+			csv_row += res + ",";
 		}
 		length++;
 		return this;
@@ -40,6 +43,16 @@ public class CSVModifier {
 			SimpleDateFormat sf = new SimpleDateFormat("yyyy-MMM-dd");
 			String date = sf.format(in);
 			csv_row += date + ",";
+		}
+		length++;
+		return this;
+	}
+	
+	public CSVModifier addItem(Boolean in) {
+		if (in == null) {
+			csv_row += "?,";
+		} else {
+			csv_row += in + ",";
 		}
 		length++;
 		return this;

@@ -1,4 +1,4 @@
-package iv_dataTransformation;
+package iii_dataTransformation;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -18,7 +18,7 @@ import settings.ExternalFilePath;
  *         2016 for Education purpose ONLY
  * @description
  */
-public abstract class CSVGenerator {
+public abstract class CSVGeneratorTemplate_MongoDB {
 	
 	private Logger mLogger;
 	private FileWriter fw;

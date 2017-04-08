@@ -1,6 +1,7 @@
 package settings;
 
 /**
+ * <<Deprecated class>> Use in only MySQL mode 
  * @author NAPAT PAOPONGPAIBUL This source code was used in my senior project
  *         2016 for Education purpose ONLY
  * @description

@@ -1,4 +1,4 @@
-package iv_dataTransformation;
+package iii_dataTransformation;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -8,8 +8,6 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.Vector;
@@ -24,14 +22,14 @@ import settings.ExternalFilePath;
 import settings.ModelParameter;
 
 /**
- * <<DEPRECATED CLASS>>
+ * <<DEPRECATED CLASS>> please use MongoDB version.
  * @author NAPAT PAOPONGPAIBUL This source code was used in my senior project
  *         2016 for Education purpose ONLY
  * @description Attribute (Column) transformation and blending for preparing
  *              before modelize data
  */
-public class MultifoldClassify {
-	private final static Logger logger = LogManager.getLogger(MultifoldClassify.class);
+public class MultifoldClassifyCSVGenerator_MySQL {
+	private final static Logger logger = LogManager.getLogger(MultifoldClassifyCSVGenerator_MySQL.class);
 	private static Connection con;
 
 	public static void main(String[] args) {
@@ -78,11 +76,11 @@ public class MultifoldClassify {
 				int res = -1;
 				switch (ModelParameter.MULTIFOLD_DETECT_MODE) {
 				case 1:
-					res = MultifoldClassify.isMultifoldStock_1(symbol, ModelParameter.S_DATE_MULFOLD,
+					res = MultifoldClassifyCSVGenerator_MySQL.isMultifoldStock_1(symbol, ModelParameter.S_DATE_MULFOLD,
 							ModelParameter.E_DATE_MULFOLD, ModelParameter.MUL_TIME_MULFOLD, con);
 					break;
 				case 2:
-					res = MultifoldClassify.isMultifoldStock_2(symbol, ModelParameter.S_DATE_MULFOLD,
+					res = MultifoldClassifyCSVGenerator_MySQL.isMultifoldStock_2(symbol, ModelParameter.S_DATE_MULFOLD,
 							ModelParameter.E_DATE_MULFOLD, ModelParameter.MUL_TIME_MULFOLD, con);
 					break;
 				}

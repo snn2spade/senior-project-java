@@ -1,4 +1,4 @@
-package iv_dataTransformation;
+package iii_dataTransformation;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -14,17 +14,17 @@ import org.apache.logging.log4j.Logger;
 
 import databaseMySQL.MySQLDBController;
 import databaseMySQL.MySQLDBViewer;
-import ii_dataAnalysis.FinancialStatementAnalysis;
+import ii_dataAnalysis.FinancialStatementAnalysisYearly;
 import settings.ExternalFilePath;
 
 /**
- * <<DEPRECATED CLASS>>
+ * <<DEPRECATED CLASS>> please use MongoDB version.
  * @author NAPAT PAOPONGPAIBUL This source code was used in my senior project
  *         2016 for Education purpose ONLY
  * @description For generate RapidMiner training file format
  */
-public class GenerateModelCSV {
-	private final static Logger logger = LogManager.getLogger(GenerateModelCSV.class);
+public class FinancialPositionCSVGenerator_MySQL {
+	private final static Logger logger = LogManager.getLogger(FinancialPositionCSVGenerator_MySQL.class);
 	private static Connection con;
 	private static Vector<String> stockList;
 
@@ -59,7 +59,7 @@ public class GenerateModelCSV {
 		HashMap<String, HashMap<Integer, HashMap<String, Double>>> data_map = new HashMap<String, HashMap<Integer, HashMap<String, Double>>>();
 		data_map = insertEmptyMap(data_map);
 		for (String stock_name : stockList) {
-			Vector<Vector<String>> data_vec = FinancialStatementAnalysis
+			Vector<Vector<String>> data_vec = FinancialStatementAnalysisYearly
 					.readFinancialStatementToVector(stock_name, financial_statement_file_path);
 			Vector<String> year_vec = data_vec.get(0);
 			data_vec.remove(0); // remove year vector

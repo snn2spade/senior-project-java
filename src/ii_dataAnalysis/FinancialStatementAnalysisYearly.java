@@ -4,10 +4,6 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,32 +14,15 @@ import java.util.Vector;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import databaseMySQL.MySQLDBController;
-import databaseMySQL.MySQLDBViewer;
-import settings.ExternalFilePath;
-
 /**
  * @author NAPAT PAOPONGPAIBUL This source code was used in my senior project
  *         2016 for Education purpose ONLY
  * @description
  */
-public class FinancialStatementAnalysis {
-	private final static Logger logger = LogManager.getLogger(FinancialStatementAnalysis.class);
-	private static Connection con;
-
+public class FinancialStatementAnalysisYearly {
+	private final static Logger logger = LogManager.getLogger(FinancialStatementAnalysisYearly.class);
 	public static void main(String[] args) {
-		con = MySQLDBController.openDBConnection();
-		// List<String> stock_list = DatabaseViewer.getSymbolList(con);
-		List<String> stock_list = new ArrayList<String>();
-		stock_list.add("AEONTS");
-		MySQLDBController.closeDBConnection(con);
-		Map<String, Integer> map_st = createStatementMap(stock_list,
-				ExternalFilePath.SETSMART_COMPREHENSIVE_INCOME_YEARLY_FILEPATH);
-		// Vector<String> sorted_key = sortStatementMap(map_st);
-		// sorted_key = sortYearKey(sorted_key);
-		// sorted_key.stream().forEach(e -> {
-		// System.out.println(e + " : " + map_st.get(e));
-		// });
+
 	}
 
 	private static Vector<String> sortYearKey(Vector<String> vec) {

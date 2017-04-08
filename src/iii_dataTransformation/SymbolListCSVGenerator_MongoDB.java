@@ -1,4 +1,4 @@
-package iv_dataTransformation;
+package iii_dataTransformation;
 
 import java.util.function.Consumer;
 
@@ -11,11 +11,11 @@ import org.bson.Document;
  * This source code was used in my senior project 2016 for Education purpose ONLY
  * @description 
  */
-public class SymbolListCSVGenerator extends CSVGenerator {
+public class SymbolListCSVGenerator_MongoDB extends CSVGeneratorTemplate_MongoDB {
 	
 	public static void main(String[] args) {
-		SymbolListCSVGenerator gen = new SymbolListCSVGenerator();
-		gen.createCSV(LogManager.getLogger(SymbolListCSVGenerator.class),"symbol","symbolList.csv");
+		SymbolListCSVGenerator_MongoDB gen = new SymbolListCSVGenerator_MongoDB();
+		gen.createCSV(LogManager.getLogger(SymbolListCSVGenerator_MongoDB.class),"symbol","symbolList.csv");
 	}
 
 	@Override

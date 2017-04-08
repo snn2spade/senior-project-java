@@ -22,6 +22,7 @@ public class MaybankGathering {
 	private static final Logger logger = LogManager.getLogger(MaybankGathering.class);
 
 	public static void main(String[] args) {
+		setSmartComprehensiveIncomeQuaterly("S & J");
 	}
 
 	private static void setSmartGathering(String url_before_symbol, String file_output_path, String last_stock_name) {
@@ -66,24 +67,28 @@ public class MaybankGathering {
 		}
 	}
 
-	private static void setSmartHistoryPriceGathering(String last_stock_name) {
+	public static void setSmartHistoryPriceGathering(String last_stock_name) {
 		String url = "http://sse.maybank-ke.co.th/historicalTrading.html?lstDisplay=T&submit=go&decorator=excel&submit.y=12&submit.x=24&showBeginDate=01%2F01%2F2012&lstPeriod=D&endDate=10%2F01%2F2017&beginDate=01%2F01%2F2012&lstMethod=AOM&chkAdjusted=true&quickPeriod=&showEndDate=10%2F01%2F2017&symbol=";
 		setSmartGathering(url, ExternalFilePath.SETSMART_HISTORICAL_FILEPATH, last_stock_name);
 	}
 
-	private static void setSmartFinancialPosYearlyGathering(String last_stock_name) {
+	public static void setSmartFinancialPosYearlyGathering(String last_stock_name) {
 		String url = "http://sse.maybank-ke.co.th/financialstatement.html?lstDisplay=T&submit=go&decorator=excel&submit.y=7&submit.x=18&lstCompareType=Y&lstEndYear=2017&lstStatementType=B&lstBeginPeriod=Q9&lstAccountType=U&lstEndPeriod=Q3&lstBeginYear=2012&symbol=";
 		setSmartGathering(url, ExternalFilePath.SETSMART_FINANCIAL_POSITION_YEARLY_FILEPATH, last_stock_name);
 	}
 
-	private static void setSmartComprehensiveIncomeYearlyGathering(String last_stock_name) {
+	public static void setSmartComprehensiveIncomeYearlyGathering(String last_stock_name) {
 		String url = "http://sse.maybank-ke.co.th/financialstatement.html?lstDisplay=T&submit=go&decorator=excel&submit.y=7&submit.x=18&lstCompareType=Y&lstEndYear=2017&lstStatementType=I&lstBeginPeriod=Q9&lstAccountType=U&lstEndPeriod=Q3&lstBeginYear=2012&symbol=";
 		setSmartGathering(url, ExternalFilePath.SETSMART_COMPREHENSIVE_INCOME_YEARLY_FILEPATH, last_stock_name);
 	}
 
-	private static void setSmartCashFlowGatheringYearly(String last_stock_name) {
+	public static void setSmartCashFlowGatheringYearly(String last_stock_name) {
 		String url = "http://sse.maybank-ke.co.th/financialstatement.html?lstDisplay=T&submit=go&decorator=excel&submit.y=7&submit.x=18&lstCompareType=Y&lstEndYear=2017&lstStatementType=C&lstBeginPeriod=Q9&lstAccountType=U&lstEndPeriod=Q3&lstBeginYear=2012&symbol=";
 		setSmartGathering(url, ExternalFilePath.SETSMART_CASH_FLOW_YEARLY_FILEPATH, last_stock_name);
 	}
-
+	
+	public static void setSmartComprehensiveIncomeQuaterly(String last_stock_name){
+		String url = "http://sse.maybank-ke.co.th/financialstatement.html?lstDisplay=T&submit=go&decorator=excel&submit.y=13&submit.x=18&lstCompareType=Q&lstEndYear=2017&lstStatementType=I&lstBeginPeriod=Q1&lstAccountType=U&lstEndPeriod=Q1&lstBeginYear=2012&symbol=";
+		setSmartGathering(url, ExternalFilePath.SETSMART_COMPREHENSIVE_INCOME_QUARTERLY_FILEPATH, last_stock_name);
+	}
 }

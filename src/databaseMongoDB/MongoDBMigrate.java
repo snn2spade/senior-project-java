@@ -14,7 +14,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bson.Document;
 
-import ii_dataAnalysis.FinancialStatementAnalysis;
+import ii_dataAnalysis.FinancialStatementAnalysisQuarterly;
+import ii_dataAnalysis.FinancialStatementAnalysisYearly;
 import settings.DatabaseConfig;
 import settings.ExternalFilePath;
 import util.TextExtractor;
@@ -32,7 +33,11 @@ public class MongoDBMigrate {
 	private static BufferedReader bufferedReader;
 
 	public static void main(String[] args) {
-		 imediatelyMigrateToMongoDB();
+		// imediatelyMigrateToMongoDB();
+		FinancialStatementController.getInstance(DatabaseConfig.COM_IN_QUARTER_COLLECTION_NAME).insertIndexing();
+		insertFinancialStatementQuarterly(DatabaseConfig.COM_IN_QUARTER_COLLECTION_NAME,
+				ExternalFilePath.SETSMART_COMPREHENSIVE_INCOME_QUARTERLY_FILEPATH);
+		MongoDBConnector.getInstance().closeConnection();
 	}
 
 	private static void imediatelyMigrateToMongoDB() {
@@ -45,16 +50,20 @@ public class MongoDBMigrate {
 		insertHistoricalTrading();
 		/* Financial position yearly */
 		FinancialStatementController.getInstance(DatabaseConfig.FIN_POS_YEARLY_COLLECTION_NAME).insertIndexing();
-		insertFinancialStatement(DatabaseConfig.FIN_POS_YEARLY_COLLECTION_NAME,
+		insertFinancialStatementYearly(DatabaseConfig.FIN_POS_YEARLY_COLLECTION_NAME,
 				ExternalFilePath.SETSMART_FINANCIAL_POSITION_YEARLY_FILEPATH);
 		/* Comprehensive income yearly */
 		FinancialStatementController.getInstance(DatabaseConfig.COM_IN_YEARLY_COLLECTION_NAME).insertIndexing();
-		insertFinancialStatement(DatabaseConfig.COM_IN_YEARLY_COLLECTION_NAME,
+		insertFinancialStatementYearly(DatabaseConfig.COM_IN_YEARLY_COLLECTION_NAME,
 				ExternalFilePath.SETSMART_COMPREHENSIVE_INCOME_YEARLY_FILEPATH);
 		/* Cash Flow yearly */
 		FinancialStatementController.getInstance(DatabaseConfig.CASH_FLOW_YEARLY_COLLECTION_NAME).insertIndexing();
-		insertFinancialStatement(DatabaseConfig.CASH_FLOW_YEARLY_COLLECTION_NAME,
+		insertFinancialStatementYearly(DatabaseConfig.CASH_FLOW_YEARLY_COLLECTION_NAME,
 				ExternalFilePath.SETSMART_CASH_FLOW_YEARLY_FILEPATH);
+		/* Comprehensive income quarterly */
+		FinancialStatementController.getInstance(DatabaseConfig.COM_IN_QUARTER_COLLECTION_NAME).insertIndexing();
+		insertFinancialStatementQuarterly(DatabaseConfig.COM_IN_QUARTER_COLLECTION_NAME,
+				ExternalFilePath.SETSMART_COMPREHENSIVE_INCOME_QUARTERLY_FILEPATH);
 		MongoDBConnector.getInstance().closeConnection();
 	}
 
@@ -180,11 +189,11 @@ public class MongoDBMigrate {
 		logger.info("Total usage time : " + ((System.currentTimeMillis() - startMethodTime) / 1000.0) + " s");
 	}
 
-	public static void insertFinancialStatement(String collection, String finacial_statement_file_path) {
+	public static void insertFinancialStatementYearly(String collection, String finacial_statement_file_path) {
 		Vector<String> symbol_list = SymbolController.getInstance().getSymbolList();
 		for (String symbol : symbol_list) {
 			logger.info("inserting data stock: " + symbol + " into " + collection);
-			Vector<Vector<String>> vec = FinancialStatementAnalysis.readFinancialStatementToVector(symbol,
+			Vector<Vector<String>> vec = FinancialStatementAnalysisYearly.readFinancialStatementToVector(symbol,
 					finacial_statement_file_path);
 			FinancialStatementController con = FinancialStatementController.getInstance(collection);
 			List<Document> data_list = new ArrayList<>();
@@ -212,6 +221,43 @@ public class MongoDBMigrate {
 				}
 				year_doc.append("attributes", attr_list);
 				data_list.add(year_doc);
+			}
+			con.insertFinancialStatementData(symbol, data_list);
+		}
+	}
+
+	public static void insertFinancialStatementQuarterly(String collection, String finacial_statement_file_path) {
+		Vector<String> symbol_list = SymbolController.getInstance().getSymbolList();
+		for (String symbol : symbol_list) {
+			logger.info("inserting data stock: " + symbol + " into " + collection);
+			Vector<Vector<String>> vec = FinancialStatementAnalysisQuarterly.readFinancialStatementToVector(symbol,
+					finacial_statement_file_path);
+			FinancialStatementController con = FinancialStatementController.getInstance(collection);
+			List<Document> data_list = new ArrayList<>();
+			List<Document> attr_list;
+			Document quarter_doc, attr_doc;
+			for (int quarter_idx = 0; quarter_idx < vec.get(0).size(); quarter_idx++) {
+				quarter_doc = new Document("quarter", vec.get(0).get(quarter_idx));
+				attr_list = new ArrayList<>();
+				for (int attr_idx = 1; attr_idx < vec.size(); attr_idx++) {
+					attr_doc = new Document("name", vec.get(attr_idx).get(0));
+					double value, percent_chg;
+					try {
+						value = TextExtractor.parseDouble(vec.get(attr_idx).get(quarter_idx * 2 + 1));
+						attr_doc.append("value", value);
+					} catch (NumberFormatException e) {
+						attr_doc.append("value", null);
+					}
+					try {
+						percent_chg = TextExtractor.parseDouble(vec.get(attr_idx).get(quarter_idx * 2 + 2));
+						attr_doc.append("percent_chg", percent_chg);
+					} catch (NumberFormatException e) {
+						attr_doc.append("percent_chg", null);
+					}
+					attr_list.add(attr_doc);
+				}
+				quarter_doc.append("attributes", attr_list);
+				data_list.add(quarter_doc);
 			}
 			con.insertFinancialStatementData(symbol, data_list);
 		}
