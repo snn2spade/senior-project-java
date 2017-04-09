@@ -19,28 +19,28 @@ import settings.ExternalFilePath;
  * @description
  */
 public abstract class CSVGeneratorTemplate_MongoDB {
-	
-	private Logger mLogger;
-	private FileWriter fw;
-	private BufferedWriter bw;
-	private MongoCollection<Document> mCollection;
-	
-	public final void createCSV(Logger logger,String collection_name,String filename) {
+
+	protected Logger mLogger;
+	protected FileWriter fw;
+	protected BufferedWriter bw;
+	protected MongoCollection<Document> mCollection;
+
+	public void createCSV(Logger logger, String collection_name, String filename) {
 		mLogger = logger;
 		initDatabaseConnection(collection_name);
 		initBufferedWriter(filename);
 		writeHeader();
 		writeRow();
-		closeDatabaseConnection();
+		closeBufferedWriter();
 	}
 
-	private final void initDatabaseConnection(String collection_name) {
+	protected void initDatabaseConnection(String collection_name) {
 		mLogger.info("initializing database connnection");
 		mCollection = MongoDBConnector.getInstance().getCollection(collection_name);
 	}
 
-	private final void closeDatabaseConnection() {
-		mLogger.info("closing database connection");
+	protected void closeBufferedWriter() {
+		mLogger.info("closing buffered writer");
 		try {
 			bw.close();
 			fw.close();
@@ -50,10 +50,15 @@ public abstract class CSVGeneratorTemplate_MongoDB {
 		}
 	}
 
-	private final void initBufferedWriter(String filename) {
+	protected void closeDatabaseConnection() {
+		mLogger.info("closing database connection");
+		MongoDBConnector.getInstance().closeConnection();
+	}
+
+	protected void initBufferedWriter(String filename) {
 		mLogger.info("initializing buffered writer");
 		try {
-			fw = new FileWriter(new File(ExternalFilePath.OUTPUT_MODEL_CSV_FILEPATH+filename));
+			fw = new FileWriter(new File(ExternalFilePath.OUTPUT_MODEL_CSV_FILEPATH + filename));
 		} catch (IOException e) {
 			e.printStackTrace();
 			mLogger.error(e.getMessage());
@@ -64,12 +69,12 @@ public abstract class CSVGeneratorTemplate_MongoDB {
 	public Logger getLogger() {
 		return mLogger;
 	}
-	
+
 	public BufferedWriter getBufferedWriter() {
 		return bw;
 	}
-	
-	public void writeLine(String line){
+
+	public void writeLine(String line) {
 		try {
 			bw.write(line);
 			bw.newLine();
@@ -84,6 +89,7 @@ public abstract class CSVGeneratorTemplate_MongoDB {
 	}
 
 	public abstract void writeHeader();
+
 	public abstract void writeRow();
-	
+
 }

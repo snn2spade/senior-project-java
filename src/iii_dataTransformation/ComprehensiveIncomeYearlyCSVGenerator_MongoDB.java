@@ -19,10 +19,10 @@ public class ComprehensiveIncomeYearlyCSVGenerator_MongoDB extends CSVGeneratorT
 
 	private int year;
 
-	String symbol;
+	private String symbol;
 
-	Map<String, Double> cur_attributes_map;
-	Map<String, Double> his_attributes_map;
+	private Map<String, Double> cur_attributes_map;
+	private Map<String, Double> his_attributes_map;
 
 	public static void main(String[] args) {
 		ComprehensiveIncomeYearlyCSVGenerator_MongoDB csvgen = new ComprehensiveIncomeYearlyCSVGenerator_MongoDB(2013);
