@@ -25,7 +25,7 @@ public class CSVModifier {
 	}
 
 	public CSVModifier addItem(Double in) {
-		if (in == null) {
+		if (in == null || in.isInfinite()) {
 			csv_row += "?,";
 		} else {
 			DecimalFormat df = new DecimalFormat("#.###");

@@ -36,8 +36,8 @@ public class MultifoldClassifyCSVGenerator_MongoDB extends CSVGeneratorTemplate_
 	private int true_count, false_count;
 
 	public static void main(String[] args) {
-		MultifoldClassifyCSVGenerator_MongoDB csvgen = new MultifoldClassifyCSVGenerator_MongoDB(5, Calendar.JANUARY,
-				2016, 1.3, ISMULTIFOLD_FROMTODAY, 2);
+		MultifoldClassifyCSVGenerator_MongoDB csvgen = new MultifoldClassifyCSVGenerator_MongoDB(4, Calendar.JANUARY,
+				2016, 1.2, ISMULTIFOLD_FROMTODAY, 2);
 		csvgen.createCSV(LogManager.getLogger(MultifoldClassifyCSVGenerator_MongoDB.class), "historicalTrading",
 				csvgen.fileName);
 	}

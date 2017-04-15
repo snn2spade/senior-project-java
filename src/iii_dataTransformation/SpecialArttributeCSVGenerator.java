@@ -98,10 +98,18 @@ public class SpecialArttributeCSVGenerator extends CSVGeneratorTemplate_MongoDB 
 			mod.addItem(cur_roa);
 			mod.addItem(cur_roe);
 			if (cur_roa != null && his_roa != null) {
-				roa_chg = (cur_roa - his_roa) / his_roa * 100.0;
+				if (his_roa < 0) {
+					roa_chg = (cur_roa - his_roa) / -his_roa * 100.0;
+				} else {
+					roa_chg = (cur_roa - his_roa) / his_roa * 100.0;
+				}
 			}
 			if (cur_roe != null && his_roe != null) {
-				roe_chg = (cur_roe - his_roe) / his_roe * 100.0;
+				if (his_roe < 0) {
+					roe_chg = (cur_roe - his_roe) / -his_roe * 100.0;
+				} else {
+					roe_chg = (cur_roe - his_roe) / his_roe * 100.0;
+				}
 			}
 			mod.addItem(roa_chg);
 			mod.addItem(roe_chg);
@@ -222,7 +230,12 @@ public class SpecialArttributeCSVGenerator extends CSVGeneratorTemplate_MongoDB 
 			cur_val = cur_attr_map.get(symbol).get(attr_name.trim());
 			his_val = his_attr_map.get(symbol).get(attr_name.trim());
 			if (cur_val != null && his_val != null) {
-				return (cur_val - his_val) / (his_val) * 100;
+				if (his_val < 0) {
+					return (cur_val - his_val) / (-his_val) * 100;
+				} else {
+					return (cur_val - his_val) / (his_val) * 100;
+				}
+
 			}
 		}
 		return null;

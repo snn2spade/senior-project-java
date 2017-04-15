@@ -29,7 +29,7 @@ public class ComprehensiveIncomeQuarterlyCSVGenerator_MongoDB extends CSVGenerat
 		ComprehensiveIncomeQuarterlyCSVGenerator_MongoDB csvgen = new ComprehensiveIncomeQuarterlyCSVGenerator_MongoDB(
 				2015);
 		csvgen.createCSV(LogManager.getLogger(ComprehensiveIncomeQuarterlyCSVGenerator_MongoDB.class),
-				"comprehensive_income_quarterly", "comprehensive_income_quarterly_" + csvgen.year + ".csv");
+				"comprehensive_income_quarterly", "comprehensive_income_quarterly_" + csvgen.year + "_new" + ".csv");
 	}
 
 	public ComprehensiveIncomeQuarterlyCSVGenerator_MongoDB(int year) {
@@ -129,23 +129,35 @@ public class ComprehensiveIncomeQuarterlyCSVGenerator_MongoDB extends CSVGenerat
 	}
 
 	private Double getPercentChg(String attr_name) {
-		Double cur_val, his_val;
-		cur_val = cur_attributes_map.get(attr_name.trim());
-		his_val = his_attributes_map.get(attr_name.trim());
-		if (cur_val != null && his_val != null) {
-			return (cur_val - his_val) / (his_val) * 100;
-		} else {
+		try {
+			Double cur_val, his_val;
+			cur_val = cur_attributes_map.get(attr_name.trim());
+			his_val = his_attributes_map.get(attr_name.trim());
+			if (cur_val == null || his_val == null) {
+				return null;
+			}
+			if (his_val < 0) {
+				return (cur_val - his_val) / (-his_val) * 100;
+			} else {
+				return (cur_val - his_val) / (his_val) * 100;
+			}
+		} catch (Exception e) {
 			return null;
 		}
 	}
 
 	private Double getPortion(String upper_attr, String lower_attr) {
-		Double upper_val, lower_val;
-		upper_val = cur_attributes_map.get(upper_attr.trim());
-		lower_val = cur_attributes_map.get(lower_attr.trim());
-		if (upper_val != null && lower_val != null) {
-			return (upper_val / lower_val) * 100;
-		} else {
+		try {
+			Double upper_val, lower_val;
+			upper_val = cur_attributes_map.get(upper_attr.trim());
+			lower_val = cur_attributes_map.get(lower_attr.trim());
+
+			if (upper_val != null && lower_val != null) {
+				return (upper_val / lower_val) * 100;
+			} else {
+				return null;
+			}
+		} catch (Exception e) {
 			return null;
 		}
 	}
