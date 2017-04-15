@@ -14,4 +14,5 @@ public class ExternalFilePath {
 	public static final String FINANCIAL_POS_ATTR_SELECTED_FILEPATH = "/Users/snn2spade/Dropbox/Senior project/History Stock Data/financial_position_attr_selected.txt";
 	public static final String COMPREHEN_INCOME_ATTR_SELECTED_FILEPATH = "/Users/snn2spade/Dropbox/Senior project/History Stock Data/comprehensive_income_attr_selected.txt";
 	public static final String CASH_FLOW_ATTR_SELECTED_FILEPATH = "/Users/snn2spade/Dropbox/Senior project/History Stock Data/cash_flow_attr_selected.txt";
+	public static final String PREDICT_GROWTH_STOCK_RESULT_FILEPATH = "/Users/snn2spade/Dropbox/Senior project/model2/1quarter_isMultiFold_fromTodayPrice_mul_1.2_2015_Jan_05.csv";
 }

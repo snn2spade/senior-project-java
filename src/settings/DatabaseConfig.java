@@ -18,4 +18,5 @@ public class DatabaseConfig {
 	public static final String FIN_POS_QUARTER_COLLECTION_NAME = "financial_position_quarterly";
 	public static final String COM_IN_QUARTER_COLLECTION_NAME = "comprehensive_income_quarterly";
 	public static final String CASH_FLOW_QUARTER_COLLECTION_NAME = "cash_flow_quarterly";
+	public static final String PREDICT_GROWTH_STOCK_COLLECTION_NAME = "predict_growth_stock";
 }

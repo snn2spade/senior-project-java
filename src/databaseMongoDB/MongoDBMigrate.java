@@ -6,7 +6,9 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.sql.Date;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Vector;
 
@@ -19,6 +21,7 @@ import ii_dataAnalysis.FinancialStatementAnalysisYearly;
 import settings.DatabaseConfig;
 import settings.ExternalFilePath;
 import util.TextExtractor;
+import util.TimeDateUtil;
 
 /**
  * For Read raw date (Excel file) and put into database by using only Controller
@@ -34,9 +37,8 @@ public class MongoDBMigrate {
 
 	public static void main(String[] args) {
 		// imediatelyMigrateToMongoDB();
-		FinancialStatementController.getInstance(DatabaseConfig.COM_IN_QUARTER_COLLECTION_NAME).insertIndexing();
-		insertFinancialStatementQuarterly(DatabaseConfig.COM_IN_QUARTER_COLLECTION_NAME,
-				ExternalFilePath.SETSMART_COMPREHENSIVE_INCOME_QUARTERLY_FILEPATH);
+		PredictGrowthStockController.getInstance(DatabaseConfig.PREDICT_GROWTH_STOCK_COLLECTION_NAME).insertIndexing();
+		insertPredictGrowthStock();
 		MongoDBConnector.getInstance().closeConnection();
 	}
 
@@ -64,6 +66,9 @@ public class MongoDBMigrate {
 		FinancialStatementController.getInstance(DatabaseConfig.COM_IN_QUARTER_COLLECTION_NAME).insertIndexing();
 		insertFinancialStatementQuarterly(DatabaseConfig.COM_IN_QUARTER_COLLECTION_NAME,
 				ExternalFilePath.SETSMART_COMPREHENSIVE_INCOME_QUARTERLY_FILEPATH);
+		/* Predict Growth stock */
+		PredictGrowthStockController.getInstance(DatabaseConfig.PREDICT_GROWTH_STOCK_COLLECTION_NAME).insertIndexing();
+		insertPredictGrowthStock();
 		MongoDBConnector.getInstance().closeConnection();
 	}
 
@@ -260,6 +265,39 @@ public class MongoDBMigrate {
 				data_list.add(quarter_doc);
 			}
 			con.insertFinancialStatementData(symbol, data_list);
+		}
+	}
+
+	public static void insertPredictGrowthStock() {
+		try {
+			FileReader fileReader = new FileReader(new File(ExternalFilePath.PREDICT_GROWTH_STOCK_RESULT_FILEPATH));
+			bufferedReader = new BufferedReader(fileReader);
+			String txt;
+			txt = bufferedReader.readLine();
+			while ((txt = bufferedReader.readLine()) != null) {
+				logger.info("inserting stock into predict growth stock collection : " + txt);
+				String symbol = txt.substring(0, txt.indexOf(","));
+				String result = txt.substring(txt.indexOf(",") + 1);
+				List<Document> data = new ArrayList<>();
+				Document doc = new Document();
+				Calendar cal = Calendar.getInstance();
+				cal.set(2015, Calendar.JANUARY,5,0,0,0);
+				doc.put("predict_date",cal.getTime());
+				if(result.equals("true")){
+					doc.put("isGrowthStock", true);
+				}
+				else{
+					doc.put("isGrowthStock", false);
+				}
+				data.add(doc);
+				PredictGrowthStockController.getInstance(DatabaseConfig.PREDICT_GROWTH_STOCK_COLLECTION_NAME)
+						.insertPredictGrowthStockData(symbol, data);
+			}
+			bufferedReader.close();
+		} catch (FileNotFoundException e) {
+			logger.error(e.getMessage());
+		} catch (IOException e) {
+			logger.error(e.getMessage());
 		}
 	}
 }
