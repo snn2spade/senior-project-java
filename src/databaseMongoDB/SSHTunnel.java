@@ -21,8 +21,8 @@ public class SSHTunnel {
 
 	// ssh connection info
 	private static final String SSH_USER = "root";
-	private static final String SSH_PASSWORD = "pokemont05";
-	private static final String SSH_HOST = "seniorproject-api.tk";
+	private static final String SSH_PASSWORD = "";
+	private static final String SSH_HOST = "";
 	private static final Integer SSH_PORT = 22;
 
 	private static Session SSH_SESSION;
